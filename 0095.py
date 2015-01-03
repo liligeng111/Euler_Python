@@ -1,54 +1,68 @@
 import math
+import prime
+import util
 
-def next(n):
-	s = 1
-	i = 2
+def divisor_sum(n):
+	fac = prime.decompose(n)
 
-	while i * i < n:
-		if n % i == 0:
-			s += i + int(n/i)
-		i += 1
-
-	return s
+	S = 1
+	for key in fac:
+		num = fac[key] + 1
+		S *= (key ** num - 1) / (key - 1)
+		# print(S)
+	return int(S - n)
 
 def length(n):
 	li = []
+	i = 0
 	r = -1
 	while n <= 1000000:
-		if (L[n] != 0):
-			if L[n] == -1:
-				r = -1
-			else:
-				r = len(li) + L[n]
-			break
-
-		li.append(n)
-		n = next(n)
 		try:
 			i = li.index(n)
 			r = len(li)
 			break;
 		except ValueError:
-			i = -1 # no match
+			pass # no match
 
-	for e in li:
-		# print(e, r)
-		L[e] = r
-	return r;
+		# print(n)
+		if (L[n] != 0):
+			r = -2
+			break
 
-M = 0
-i = 1
-B = 10 * 10000
+		li.append(n)
+		n = S[n]
+
+	# print(li)
+	for j in range(0, len(li)):
+		L[li[j]] = r - i if j >= i else -2
+		# print(j, i, L[li[j]])
+
+
+S = [0] * 1000001
 L = [0] * 1000001
 
-# print(length(12496))
+prime.init(1000001)
+# print(divisor_sum(2))
+# print(divisor_sum(4))
+# print(divisor_sum(7))
+# print(divisor_sum(14))
+# print(divisor_sum(28))
+# print(divisor_sum(12496))
 
-while i < B:
-	i += 1
-	if L[i] != 0:
-		continue
+for i in range(0, 1000000):
+	S[i] = int(divisor_sum(i))
 
-	l = length(i)
-	if (l > M):
-		M = l
-		print (i, l)
+# print(S[12496])
+
+# print(length(9464))
+M = 0
+
+for i in range(0, 1000000):
+	 if L[i] == 0: length(i)
+	 if L[i] > M:
+	 	M = L[i]
+	 	print(i, M)
+
+# print(L[12496])
+# print(prime.primes)
+
