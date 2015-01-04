@@ -14,11 +14,6 @@ def init(n):
 			if i % num == 0:
 				break
 
-def is_prime(n):
-	for i in range(0, len(primes)):
-		if primes[i] == n:
-			return True
-	return False
 
 def decompose(n):
 	init(n)
