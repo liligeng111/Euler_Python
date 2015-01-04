@@ -1,3 +1,6 @@
+import itertools
+import copy
+
 class Suduko:
 
 	group = []
@@ -39,10 +42,11 @@ class Suduko:
 			for coord in g:
 				if n in self.choice[coord[0]][coord[1]]: self.choice[coord[0]][coord[1]].remove(n)
 
-	def remove_choice(self, x, y, n):
-		if n in self.choice[x][y]:
-			self.choice[x][y].remove(n)
-			self.changed = True
+	def remove_choice(self, x, y, list):
+		for n in list:
+			if n in self.choice[x][y]:
+				self.choice[x][y].remove(n)
+				self.changed = True
 
 	def show(self):
 		# for y in range(0, 9):
@@ -95,9 +99,31 @@ class Suduko:
 			self.check_subset()
 			if self.solved == 81:
 				return self.check_correct()
+
+		#cannot deduct, begin trying
+		return self.trial()
+
+	def trial(self):
+		[x, y] = self.most_likely()
+		if [x, y] == [-1, -1]: return False
+		pool = self.choice[x][y]
+		for i in pool:
+			foo = copy.deepcopy(self)
+			foo.set(x, y, i)
+			if foo.solve():
+				self.set(x, y, i)
+				return self.solve()
 		print("Cannot solve this puzzle")
 		self.show()
 		return False
+
+	def most_likely(self):
+		for i in range(2, 9):
+			for x in range(0, 9):
+				for y in range(0, 9):
+					if len(self.choice[x][y]): return [x, y]
+		#wrong try, no choices left
+		return [-1, -1]
 
 	def only_choice(self):
 		for x in range(0, 9):
@@ -119,31 +145,58 @@ class Suduko:
 
 	def check_subset(self):		
 		for g in Suduko.group:
-			count = 0
+			remain = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 			for coord in g:
 				if self.board[coord[0]][coord[1]] != 0:
-					count += 1
+					remain.remove(self.board[coord[0]][coord[1]])
 
-			for i in range(1, 10):
-				found = []
+			com = []
+			for i in range(1, len(remain)): com += list(itertools.combinations(remain, i))
+			for c in com:
+				c = list(c)
+				pointing = []
+				subset = []
 				for coord in g:
-					if i in self.choice[coord[0]][coord[1]]: found.append(coord)
+					if self.board[coord[0]][coord[1]] != 0: continue
+					for i in c:
+						if i in self.choice[coord[0]][coord[1]]:pointing.append(coord)
 
-				#found all
-				if len(found) == 9 - count: continue
+					is_subset = True
+					for i in self.choice[coord[0]][coord[1]]:
+						if i not in c:
+							is_subset = False
+							break
+					if is_subset:
+						subset.append(coord)
+
+				#subset found!
+				if len(subset) == len(c):
+					# self.show()
+					# print(subset, c)
+					for coord in g:
+						if coord not in subset: self.remove_choice(coord[0], coord[1], c)
+					# self.show()
+					break
+
+
 				# leave for only_choice
-				if len(found) == 1: continue
-				#not found
-				if len(found) == 0: continue
+				if len(pointing) == 1: continue
+				#not pointing
+				if len(pointing) == 0: continue
 
 				for tg in Suduko.group:
-					subset = True
-					for sc in found:
+					is_pointint = True
+					for sc in pointing:
 						if sc not in tg:
-							subset = False
+							is_pointint = False
 							break
 
-					if not subset: continue
+					if not is_pointint: continue
 					for coord in tg:
-						if coord in found: continue
-						self.remove_choice(coord[0], coord[1], i)
+						if coord in pointing: continue
+						# print(c, tg, pointing)
+						# self.show()
+						self.remove_choice(coord[0], coord[1], c)
+					# self.show()
+					# raise system.exit
+
