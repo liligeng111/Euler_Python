@@ -96,7 +96,8 @@ class Suduko:
 		while self.changed:
 			self.changed = False
 			self.only_choice()
-			self.check_subset()
+			#Truns out it is faster not to deduct......FUCK
+			# self.check_subset()
 			if self.solved == 81:
 				return self.check_correct()
 
@@ -113,8 +114,8 @@ class Suduko:
 			if foo.solve():
 				self.set(x, y, i)
 				return self.solve()
-		print("Cannot solve this puzzle")
-		self.show()
+		# print("Cannot solve this puzzle")
+		# self.show()
 		return False
 
 	def most_likely(self):
