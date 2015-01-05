@@ -1,29 +1,27 @@
 import math
 
-def M(n):
-	count = 0
+def M(n, count):
 	# a > b > c
-	for a in range(1, n + 1):
-		for b in range(1, a + 1):
-			for c in range(1, b + 1):
-				if is_integer(a, b, c): count += 1
+	for s in range(1, 2 * n + 1):
+		if is_square(n, s):
+			b_max = min(n, s - 1)
+			b_min = max(1, (s + 1)//2) 
+			count += 1 + b_max - b_min
 	return count
 
-def is_integer(a, b, c):
-	return False
-	l_a = a * a + (b + c) * (b + c)
-	l_b = b * b + (a + c) * (a + c)
-	l_c = c * c + (a + b) * (a + b)
-	s = l_a if l_a < l_b else l_b
-	s = s if s < l_c else l_c
+def is_square(a, b):
+	s = a * a + b * b
 	root = math.sqrt(s)
 	return root == int(root)
 
-# i = 1
-# while i < 200:
-# 	i += 1
-# 	if M(i) > 5000000:
-# 		print(i, M(i))
-# 		break 
+i = 1
+count = 0
+# print(M(100, 0))
+while True:
+	i += 1
+	count = M(i, count)
+	if (count > 1000000):
+		print(i, count)
+		break
 
-print(M(1000))
+# print(M(1000))

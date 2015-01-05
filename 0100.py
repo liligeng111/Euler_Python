@@ -1,26 +1,18 @@
 import math
 
 r = math.sqrt(0.5)
-i = 22
-# i = 1000000000000
+# i = 200000000
+i = 10 ** 6
 found = False
 
+def is_square(n):
+	root = int(math.sqrt(n))
+	return root * root == n
 
 while not found:
 	i += 1
-	a = int(i * r)
-
-	while True:
-		n = a * (a - 1) * 2
-		m = i * (i - 1)
-
-		if n == m:
-			found = True
-			print(a, i)
-			break
-		elif n > m:
-			break
-
-		a += 1
+	if is_square(2 * i * (i - 1) + 1):
+		found = True
+		print(i)
 
 # not really working
