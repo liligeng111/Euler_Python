@@ -1,18 +1,16 @@
-import math
+limit = 10 ** 12
 
-r = math.sqrt(0.5)
-# i = 200000000
-i = 10 ** 6
-found = False
+x1 = 1
+y1 = 1
+[x, y] = [x1, y1]
 
-def is_square(n):
-	root = int(math.sqrt(n))
-	return root * root == n
+while True:
+	[x, y] = [x * x1 + 2 * y * y1, x1 * y + y1 * x]
+	# print(x, y)
+	if (x + 1) % 2 != 0: continue
+	if (y + 1) % 2 != 0: continue
+	print((y + 1) // 2, (x + 1) // 2)
+	if 2 * limit - 1 < x: break
 
-while not found:
-	i += 1
-	if is_square(2 * i * (i - 1) + 1):
-		found = True
-		print(i)
 
 # not really working
